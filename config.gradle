@@ -1,0 +1,11 @@
+ext {
+
+
+    versions = [
+            rxHttp: "2.2.9",
+    ]
+
+    dependencies = [
+            rxHttp                 : "com.github.goweii:RxHttp:$versions.rxHttp",
+    ]
+}
