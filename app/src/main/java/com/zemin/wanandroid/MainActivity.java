@@ -1,50 +1,30 @@
 package com.zemin.wanandroid;
 
-import android.util.Log;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.zemin.basic_core.base.BaseActivity;
 import com.zemin.basic_core.mvp.MvpPresenter;
-import com.zemin.wanandroid.http.BaseRequest;
-import com.zemin.wanandroid.http.RequestListener;
-import com.zemin.wanandroid.http.WanAndroidApi;
-import com.zemin.wanandroid.module.main.model.ArticleListBean;
+import com.zemin.wanandroid.module.home.fragment.HomeFragment;
 
 public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
 
     @Override
     protected void initView() {
-
+        FragmentManager manager = getSupportFragmentManager();
+        Fragment fragment = manager.findFragmentById(R.id.content);
+        if (fragment == null) {
+            FragmentTransaction fragmentTransaction = manager.beginTransaction();
+            fragmentTransaction.add(R.id.content, HomeFragment.create());
+            fragmentTransaction.commit();
+        }
     }
 
     @Override
     protected void initData() {
-        BaseRequest.request(WanAndroidApi.api().getArticleLis(0), new RequestListener<ArticleListBean>() {
-            @Override
-            public void onStart() {
 
-            }
-
-            @Override
-            public void onError() {
-
-            }
-
-            @Override
-            public void onFinish() {
-
-            }
-
-            @Override
-            public void onSuccess(int code, ArticleListBean data) {
-                Log.e(TAG, "onSuccess: code="+code+"  data="+data.toJson());
-            }
-
-            @Override
-            public void onFail(int code, String msg) {
-
-            }
-        });
     }
 
     @Override

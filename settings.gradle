@@ -1,3 +1,6 @@
+include ':base_utils'
+include ':basic_res'
+include ':basic_ui'
 include ':Rxhttp'
 include ':basic_core'
 include ':app'

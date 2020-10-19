@@ -8,7 +8,7 @@ import java.util.List;
  * @Date 2020/7/19 12:23
  * @Created by zemin
  */
-public class ArticleList extends BaseBean {
+public class ArticleBean extends BaseBean {
     /**
      * apkLink :
      * audit : 1

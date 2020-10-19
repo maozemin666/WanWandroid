@@ -26,7 +26,7 @@ public class ArticleListBean extends BaseBean {
     private int pageCount;
     private int size;
     private int total;
-    private List<ArticleList> datas;
+    private List<ArticleBean> datas;
 
     public int getCurPage() {
         return curPage;
@@ -76,11 +76,11 @@ public class ArticleListBean extends BaseBean {
         this.total = total;
     }
 
-    public List<ArticleList> getDatas() {
+    public List<ArticleBean> getDatas() {
         return datas;
     }
 
-    public void setDatas(List<ArticleList> datas) {
+    public void setDatas(List<ArticleBean> datas) {
         this.datas = datas;
     }
 }

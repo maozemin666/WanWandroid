@@ -9,10 +9,17 @@ public abstract class MvpActivity<P extends MvpPresenter> extends AppCompatActiv
 
     protected P presenter;
 
+    protected abstract int getLayoutId();
+
+    protected abstract P initPresenter();
+
+    protected abstract void initView();
+
+    protected abstract void initData();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initWindow();
         if (getLayoutId() > 0) {
             setContentView(getLayoutId());
         }
@@ -28,14 +35,11 @@ public abstract class MvpActivity<P extends MvpPresenter> extends AppCompatActiv
         initData();
     }
 
-    protected abstract void initData();
-
-    protected abstract void initView();
-
-    protected abstract P initPresenter();
-
-    protected void initWindow() {
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (presenter != null) {
+            presenter.detach();
+        }
     }
-
-    protected abstract int getLayoutId();
 }

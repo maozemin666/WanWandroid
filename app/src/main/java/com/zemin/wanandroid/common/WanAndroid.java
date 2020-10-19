@@ -2,6 +2,7 @@ package com.zemin.wanandroid.common;
 
 import android.app.Application;
 
+import com.zemin.base_utils.Utils;
 import com.zemin.rxhttp.core.RxHttp;
 import com.zemin.wanandroid.http.RxHttpRequestSetting;
 
@@ -16,5 +17,6 @@ public class WanAndroid extends Application {
         super.onCreate();
         RxHttp.getInstance().init(this);
         RxHttp.getInstance().initRequest(new RxHttpRequestSetting());
+        Utils.init(this);
     }
 }

@@ -6,7 +6,7 @@ import com.zemin.rxhttp.request.base.BaseResponse;
  * @Date 2020/7/19 12:02
  * @Created by zemin
  */
-public class WanAndroidReponse<E> implements BaseResponse<E> {
+public class WanReponse<E> implements BaseResponse<E> {
     private int errorCode;
     private String errorMsg;
     private E data;

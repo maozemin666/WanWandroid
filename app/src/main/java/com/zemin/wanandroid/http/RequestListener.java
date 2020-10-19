@@ -14,4 +14,31 @@ public interface RequestListener<E> {
     void onSuccess(int code, E data);
 
     void onFail(int code, String msg);
+
+    class SimpleRequestListenerImpl<E> implements RequestListener<E> {
+        @Override
+        public void onStart() {
+
+        }
+
+        @Override
+        public void onError() {
+
+        }
+
+        @Override
+        public void onFinish() {
+
+        }
+
+        @Override
+        public void onSuccess(int code, E data) {
+
+        }
+
+        @Override
+        public void onFail(int code, String msg) {
+
+        }
+    }
 }
