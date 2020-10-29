@@ -19,6 +19,7 @@ ext {
 
             webviewlib             : "1.4.0",
             disklrucache           : "2.0.2",
+            xrefreshview           : "3.6.9",
     ]
 
     dependencies = [
@@ -42,5 +43,7 @@ ext {
 
             webviewlib             : "cn.yc:WebViewLib:$versions.webviewlib",
             disklrucache           : "com.jakewharton:disklrucache:$versions.disklrucache",
+
+            xrefreshview           : "com.huxq17.xrefreshview:xrefreshview:$versions.xrefreshview",
     ]
 }

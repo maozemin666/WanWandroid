@@ -155,6 +155,6 @@ public class WanCache {
     }
 
     public static class CacheKey {
-        public static final String BANNER = "banner/json";
+        public static final String BANNER = "banner_json";
     }
 }

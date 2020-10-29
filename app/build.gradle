@@ -58,4 +58,5 @@ dependencies {
 
     api rootProject.ext.dependencies.webviewlib
     api rootProject.ext.dependencies.disklrucache
+    api rootProject.ext.dependencies.xrefreshview
 }
