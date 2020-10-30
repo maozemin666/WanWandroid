@@ -15,6 +15,7 @@ public class XRefreshLayout extends LinearLayout {
     private XRefreshContentView refreshContentView;
     private XRefreshHeadView refreshHeadView;
     private int touchSlop;
+    private int headViewHeight;
 
     public XRefreshLayout(Context context) {
         this(context, null);
@@ -35,7 +36,16 @@ public class XRefreshLayout extends LinearLayout {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        int childCount = super.getChildCount();
+        if (childCount > 3) {
+            throw new RuntimeException("最多支持3个子view");
+        }
+    }
+
+    @Override
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
         final int childCount = super.getChildCount();
@@ -49,12 +59,36 @@ public class XRefreshLayout extends LinearLayout {
             if (child.getVisibility() == GONE) {
                 continue;
             }
+
+            if (refreshHeadView != null && refreshHeadView == child) {
+                final ViewGroup.LayoutParams lp = child.getLayoutParams();
+                MarginLayoutParams mlp = lp instanceof MarginLayoutParams ? (MarginLayoutParams) lp : sDefaultMarginLayoutParams;
+
+                int headWidthMeasureSpec = ViewGroup.getChildMeasureSpec(widthMeasureSpec,
+                        paddingStart + paddingEnd + mlp.getMarginStart() + mlp.getMarginEnd(), mlp.width);
+
+                if (lp.height > 0) {
+                    headViewHeight = lp.height + mlp.topMargin + mlp.bottomMargin;
+                } else if (lp.height == ViewGroup.LayoutParams.WRAP_CONTENT) {
+                    final int maxHeight = Math.max(height - mlp.topMargin - mlp.bottomMargin, 0);
+                    refreshHeadView.measure(headWidthMeasureSpec, MeasureSpec.makeMeasureSpec(maxHeight, MeasureSpec.AT_MOST));
+                    final int measuredHeight = refreshHeadView.getMeasuredHeight();
+
+                    if (measuredHeight > 0) {
+                        headViewHeight = measuredHeight;
+                    }
+                }
+
+                if (lp.height != -1) {
+//                    refreshHeadView.measure(headWidthMeasureSpec, );
+                }
+            }
+
             final ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
             MarginLayoutParams mlp = layoutParams instanceof MarginLayoutParams ? (MarginLayoutParams) layoutParams : sDefaultMarginLayoutParams;
             int childWidthSize = width - paddingStart - paddingEnd - mlp.getMarginStart() - mlp.getMarginEnd();
-
             int childWidthSpec = MeasureSpec.makeMeasureSpec(childWidthSize, MeasureSpec.EXACTLY);
-            int childHeightSpec = super.getChildMeasureSpec(height, paddingTop + paddingBottom + mlp.topMargin + mlp.bottomMargin, mlp.height);
+            int childHeightSpec = ViewGroup.getChildMeasureSpec(heightMeasureSpec, paddingTop + paddingBottom + mlp.topMargin + mlp.bottomMargin, mlp.height);
             child.measure(childWidthSpec, childHeightSpec);
         }
         super.setMeasuredDimension(
@@ -85,5 +119,4 @@ public class XRefreshLayout extends LinearLayout {
             child.layout(left, top, right, bottom);
         }
     }
-}
 }
