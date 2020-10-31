@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/refresh_head_height">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/refresh_head_height"
+        android:layout_centerInParent="true"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/refresh_head_height">
+
+            <ImageView
+                android:id="@+id/arrow"
+                android:layout_width="@dimen/refresh_head_arrow_height"
+                android:layout_height="@dimen/refresh_head_arrow_height"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_24_down_refresh"
+                android:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="@dimen/refresh_head_arrow_height"
+                android:layout_height="@dimen/refresh_head_arrow_height"
+                android:layout_centerInParent="true"
+                android:visibility="gone" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/refresh_head_height"
+            android:layout_marginStart="8dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/description"
+                style="@style/refreshHeaderStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/refresh_head_height"
+                android:gravity="center"
+                android:text="" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
