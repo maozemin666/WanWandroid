@@ -1,62 +1,20 @@
 apply plugin: 'com.android.application'
 
+apply from: "../module.gradle"
+
 android {
-    compileSdkVersion 29
-
     defaultConfig {
-        applicationId "com.zemin.wanandroid"
-        minSdkVersion 24
-        targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        applicationId rootProject.ext.android.applicationId
     }
 }
 
 dependencies {
-    implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation project(path: ':Rxhttp')
-    implementation project(':basic_core')
-    implementation project(':basic_res')
-    implementation project(path: ':basic_ui')
-    implementation project(path: ':base_utils')
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
     api rootProject.ext.dependencies.rxandroid
     api rootProject.ext.dependencies.rxjava
     api rootProject.ext.dependencies.retrofit
     api rootProject.ext.dependencies.converter_gson
     api rootProject.ext.dependencies.adapter_rxjava3
 
-    api rootProject.ext.dependencies.rxHttp
-    api rootProject.ext.dependencies.recyclerview
-
-    api rootProject.ext.dependencies.bravh
-    api rootProject.ext.dependencies.roundedimageview
-
-    api rootProject.ext.dependencies.glide
-    api rootProject.ext.dependencies.glideCompiler
-    api (rootProject.ext.dependencies.glideOkhttp3) {
-        transitive = false
-    }
-
     api rootProject.ext.dependencies.webviewlib
     api rootProject.ext.dependencies.disklrucache
-    api rootProject.ext.dependencies.xrefreshview
 }

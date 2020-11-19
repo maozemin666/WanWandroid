@@ -6,12 +6,12 @@
         <shape>
             <size tools:width="360dp"
                 tools:height="360dp"/>
-<!--            <solid android:color="@color/ic_launcher_background" />-->
+            <solid android:color="@color/ic_launcher_background" />
         </shape>
     </item>
 
     <item>
-<!--        <bitmap android:src="@drawable/logo" android:gravity="center"/>-->
+        <bitmap android:src="@drawable/logo" android:gravity="center"/>
     </item>
 
 </layer-list>

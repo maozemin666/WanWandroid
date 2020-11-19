@@ -15,10 +15,15 @@ import androidx.fragment.app.Fragment;
  * @Created by zemin
  */
 public abstract class MvpFragment<P extends MvpPresenter> extends Fragment implements MvpView {
-
     protected P presenter;
 
     private View rootView;
+
+    protected abstract P initPresenter();
+
+    protected abstract void initView();
+
+    protected abstract void loadData();
 
     @Nullable
     @Override
@@ -66,10 +71,4 @@ public abstract class MvpFragment<P extends MvpPresenter> extends Fragment imple
     public final <V extends View> V findViewById(@IdRes int id) {
         return rootView.findViewById(id);
     }
-
-    protected abstract P initPresenter();
-
-    protected abstract void initView();
-
-    protected abstract void loadData();
 }

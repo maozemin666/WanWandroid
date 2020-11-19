@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.zemin.basic_core.base.BaseFragment;
+import com.zemin.basic_core.utils.SmartRefreshUtils;
 import com.zemin.basic_ui.banner.Banner;
 import com.zemin.wanandroid.R;
 import com.zemin.wanandroid.module.home.Banner.BannerHeaderAdapter;
@@ -20,13 +22,15 @@ import java.util.List;
 
 /**
  * @Date 2020/9/22 18:09
- * @Created by zemin
+ * @Author  by zemin
  */
 public class HomeFragment extends BaseFragment<HomePresenter> implements HomeView {
     private static final String TAG = "HomeFragment";
     private static final int PAGE_START = 0;
 
-    private RecyclerView homeRecyClerView;
+    private RecyclerView home;
+    private SmartRefreshLayout refresh;
+    private SmartRefreshUtils refreshUtils;
 
     private ArticleAdapter articleAdapter;
 
@@ -51,12 +55,21 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeVie
 
     @Override
     protected void initView() {
-        homeRecyClerView = findViewById(R.id.rv_home);
-        homeRecyClerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        refresh = findViewById(R.id.srl_refresh);
+        refreshUtils = SmartRefreshUtils.with(refresh);
+        refreshUtils.pureScrollMode();
+        refreshUtils.setRefreshListener(this::refresh);
+
+        home = findViewById(R.id.rv_home);
+        home.setLayoutManager(new LinearLayoutManager(getContext()));
         articleAdapter = new ArticleAdapter();
-        homeRecyClerView.setAdapter(articleAdapter);
+        home.setAdapter(articleAdapter);
 
         createBanner();
+    }
+
+    private void refresh() {
+
     }
 
     private void createBanner() {

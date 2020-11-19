@@ -18,7 +18,6 @@
                 android:layout_width="@dimen/refresh_head_arrow_height"
                 android:layout_height="@dimen/refresh_head_arrow_height"
                 android:layout_centerInParent="true"
-                android:src="@drawable/ic_24_down_refresh"
                 android:visibility="gone" />
 
             <ProgressBar

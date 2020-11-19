@@ -1,1 +1,4 @@
-<resources></resources>
+<resources>
+    <string name="xrefreshview_header_hint_normal">下拉刷新</string>
+    <string name="xrefreshview_never_refresh">从未刷新</string>
+</resources>

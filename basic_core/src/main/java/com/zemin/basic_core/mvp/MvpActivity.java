@@ -6,7 +6,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 public abstract class MvpActivity<P extends MvpPresenter> extends AppCompatActivity implements MvpView {
-
     protected P presenter;
 
     protected abstract int getLayoutId();

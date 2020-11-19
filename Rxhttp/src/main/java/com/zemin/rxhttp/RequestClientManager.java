@@ -4,12 +4,10 @@ import android.text.TextUtils;
 
 import com.zemin.rxhttp.core.BaseClientManager;
 import com.zemin.rxhttp.core.RxHttp;
-import com.zemin.rxhttp.request.setting.RequestSetting;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory;

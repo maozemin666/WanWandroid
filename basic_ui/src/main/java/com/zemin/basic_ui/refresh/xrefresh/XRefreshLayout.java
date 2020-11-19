@@ -2,12 +2,15 @@ package com.zemin.basic_ui.refresh.xrefresh;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
+
+import com.zemin.basic_ui.utils.SmartUtil;
 
 public class XRefreshLayout extends LinearLayout {
     protected static final MarginLayoutParams sDefaultMarginLayoutParams = new MarginLayoutParams(-1, -1);
@@ -16,6 +19,11 @@ public class XRefreshLayout extends LinearLayout {
     private XRefreshHeadView refreshHeadView;
     private int touchSlop;
     private int headViewHeight;
+    private float lastX;
+    private float lastY;
+    private float initialMotionY;
+    private boolean moveForHorizontal;
+    private HeadRefreshState headState = HeadRefreshState.READY_TO_PULL;
 
     public XRefreshLayout(Context context) {
         this(context, null);
@@ -33,6 +41,7 @@ public class XRefreshLayout extends LinearLayout {
         refreshContentView = new XRefreshContentView();
         refreshHeadView = new XRefreshHeadView(context);
         addView(refreshHeadView, 0);
+
     }
 
     @Override
@@ -42,6 +51,7 @@ public class XRefreshLayout extends LinearLayout {
         if (childCount > 3) {
             throw new RuntimeException("最多支持3个子view");
         }
+        refreshContentView.setContentView(getChildAt(1));
     }
 
     @Override
@@ -53,6 +63,7 @@ public class XRefreshLayout extends LinearLayout {
         final int paddingEnd = super.getPaddingEnd();
         final int paddingTop = super.getPaddingTop();
         final int paddingBottom = super.getPaddingBottom();
+        int minHeight = 0;
 
         for (int i = 0; i < childCount; i++) {
             View child = super.getChildAt(i);
@@ -64,36 +75,46 @@ public class XRefreshLayout extends LinearLayout {
                 final ViewGroup.LayoutParams lp = child.getLayoutParams();
                 MarginLayoutParams mlp = lp instanceof MarginLayoutParams ? (MarginLayoutParams) lp : sDefaultMarginLayoutParams;
 
-                int headWidthMeasureSpec = ViewGroup.getChildMeasureSpec(widthMeasureSpec,
-                        paddingStart + paddingEnd + mlp.getMarginStart() + mlp.getMarginEnd(), mlp.width);
+                int headWidthMeasureSpec = ViewGroup.getChildMeasureSpec(widthMeasureSpec, mlp.leftMargin + mlp.rightMargin, mlp.width);
 
                 if (lp.height > 0) {
                     headViewHeight = lp.height + mlp.topMargin + mlp.bottomMargin;
                 } else if (lp.height == ViewGroup.LayoutParams.WRAP_CONTENT) {
                     final int maxHeight = Math.max(height - mlp.topMargin - mlp.bottomMargin, 0);
+
                     refreshHeadView.measure(headWidthMeasureSpec, MeasureSpec.makeMeasureSpec(maxHeight, MeasureSpec.AT_MOST));
+
                     final int measuredHeight = refreshHeadView.getMeasuredHeight();
-
                     if (measuredHeight > 0) {
-                        headViewHeight = measuredHeight;
+                        headViewHeight = -1;
+                        if (measuredHeight != maxHeight) {
+                            headViewHeight = measuredHeight + mlp.topMargin + mlp.bottomMargin;
+                        }
                     }
+                } else if (lp.height == ViewGroup.LayoutParams.MATCH_PARENT) {
+                    headViewHeight = -1;
                 }
 
-                if (lp.height != -1) {
-//                    refreshHeadView.measure(headWidthMeasureSpec, );
+                if (headViewHeight == -1) {
+                    headViewHeight = SmartUtil.dp2px(100);
                 }
+                refreshHeadView.measure(headWidthMeasureSpec, MeasureSpec.makeMeasureSpec(headViewHeight - mlp.topMargin - mlp.bottomMargin, MeasureSpec.EXACTLY));
+                minHeight += refreshHeadView.getMeasuredHeight();
+            } else {
+                final ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
+                MarginLayoutParams mlp = layoutParams instanceof MarginLayoutParams ? (MarginLayoutParams) layoutParams : sDefaultMarginLayoutParams;
+                int childWidthSize = width - paddingStart - paddingEnd - mlp.getMarginStart() - mlp.getMarginEnd();
+                int childWidthSpec = MeasureSpec.makeMeasureSpec(childWidthSize, MeasureSpec.EXACTLY);
+                int childHeightSpec = ViewGroup.getChildMeasureSpec(heightMeasureSpec, paddingTop + paddingBottom + mlp.topMargin + mlp.bottomMargin, mlp.height);
+
+                child.measure(childWidthSpec, childHeightSpec);
+                minHeight += child.getMeasuredHeight();
             }
 
-            final ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
-            MarginLayoutParams mlp = layoutParams instanceof MarginLayoutParams ? (MarginLayoutParams) layoutParams : sDefaultMarginLayoutParams;
-            int childWidthSize = width - paddingStart - paddingEnd - mlp.getMarginStart() - mlp.getMarginEnd();
-            int childWidthSpec = MeasureSpec.makeMeasureSpec(childWidthSize, MeasureSpec.EXACTLY);
-            int childHeightSpec = ViewGroup.getChildMeasureSpec(heightMeasureSpec, paddingTop + paddingBottom + mlp.topMargin + mlp.bottomMargin, mlp.height);
-            child.measure(childWidthSpec, childHeightSpec);
         }
         super.setMeasuredDimension(
                 View.resolveSize(super.getSuggestedMinimumWidth(), widthMeasureSpec),
-                height);
+                View.resolveSize(minHeight, heightMeasureSpec));
     }
 
     @Override
@@ -109,14 +130,74 @@ public class XRefreshLayout extends LinearLayout {
                 continue;
             }
 
-            final ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
-            MarginLayoutParams mlp = layoutParams instanceof MarginLayoutParams ? (MarginLayoutParams) layoutParams : sDefaultMarginLayoutParams;
-
-            int left = paddingLeft + mlp.leftMargin;
-            int top = paddingTop + mlp.topMargin;
-            int right = left + child.getMeasuredWidth();
-            int bottom = top + child.getMeasuredHeight();
-            child.layout(left, top, right, bottom);
+            if (refreshHeadView != null && refreshHeadView == child) {
+                final ViewGroup.LayoutParams layoutParams = refreshHeadView.getLayoutParams();
+                MarginLayoutParams mlp = layoutParams instanceof MarginLayoutParams ? (MarginLayoutParams) layoutParams : sDefaultMarginLayoutParams;
+                int left = mlp.leftMargin;
+                int right = left + refreshHeadView.getMeasuredWidth();
+                int top = mlp.topMargin;
+                int bottom = top + refreshHeadView.getMeasuredHeight();
+                refreshHeadView.layout(left, top - headViewHeight, right, bottom - headViewHeight);
+            } else {
+                final ViewGroup.LayoutParams layoutParams = refreshHeadView.getLayoutParams();
+                MarginLayoutParams mlp = layoutParams instanceof MarginLayoutParams ? (MarginLayoutParams) layoutParams : sDefaultMarginLayoutParams;
+                int left = paddingLeft + mlp.leftMargin;
+                int top = paddingTop + mlp.topMargin;
+                int right = left + child.getMeasuredWidth();
+                int bottom = top + child.getMeasuredHeight();
+                child.layout(left, top, right, bottom);
+            }
         }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN: {
+                lastX = ev.getRawX();
+                lastY = ev.getRawY();
+                initialMotionY = lastY;
+                break;
+            }
+            case MotionEvent.ACTION_MOVE: {
+                float currentX = ev.getRawX();
+                float currentY = ev.getRawY();
+                float delaX = currentX - lastX;
+                float delaY = currentY - lastY;
+                lastX = currentX;
+                lastY = currentY;
+
+                if (delaX > touchSlop && Math.abs(delaX) > Math.abs(delaY)) {
+                    moveForHorizontal = true;
+                }
+
+                if (moveForHorizontal) {
+                    return super.dispatchTouchEvent(ev);
+                }
+
+                if (headState == HeadRefreshState.READY_TO_PULL) {
+                    updateHeadView(currentY, delaY);
+                }
+                break;
+            }
+            case MotionEvent.ACTION_UP:
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                break;
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    private void updateHeadView(float currentY, float delaY) {
+        moveView(delaY);
+    }
+
+    private void moveView(float delaY) {
+        refreshHeadView.offsetTopAndBottom((int) delaY);
+        refreshContentView.getContentView().offsetTopAndBottom((int) delaY);
+    }
+
+    enum HeadRefreshState {
+        READY_TO_PULL, LOADING, RELEASE_TO_LOAD_MORE,
     }
 }

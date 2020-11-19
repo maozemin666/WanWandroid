@@ -8,7 +8,6 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -149,10 +148,10 @@ public abstract class BaseQuickAdapter<T> extends RecyclerView.Adapter<BaseViewH
     }
 
     public int addHeaderView(View header, int index) {
-        return addHeaderView(header, index, LinearLayoutCompat.VERTICAL);
+        return addHeaderView(header, index, LinearLayout.VERTICAL);
     }
 
-    public int addHeaderView(View header, int index, @LinearLayoutCompat.OrientationMode int orientation) {
+    public int addHeaderView(View header, int index, int orientation) {
         if (headerLayout == null) {
             headerLayout = new LinearLayout(header.getContext());
             if (orientation == LinearLayout.VERTICAL) {

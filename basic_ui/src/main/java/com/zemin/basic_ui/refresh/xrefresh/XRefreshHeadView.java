@@ -6,6 +6,8 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 
+import com.zemin.basic_ui.R;
+
 public class XRefreshHeadView extends LinearLayout {
     public XRefreshHeadView(Context context) {
         this(context, null);
@@ -17,6 +19,6 @@ public class XRefreshHeadView extends LinearLayout {
     }
 
     private void initView(Context context, AttributeSet attrs) {
-
+        inflate(context, R.layout.xrefreshview_header, this);
     }
 }
