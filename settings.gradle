@@ -5,3 +5,4 @@ include ':Rxhttp'
 include ':basic_core'
 include ':app'
 rootProject.name = "WanAndroid"
+include ':JetPackMvvm'
